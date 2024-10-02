@@ -10,7 +10,7 @@ interface UserListProps {
 
 const UserList: React.FC<UserListProps> = ({ users, onRemoveUser }) => {
     return (
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2, width: '33%' }}>
             <Typography variant="h5" gutterBottom>
                 Connected Users
             </Typography>
