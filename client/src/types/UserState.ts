@@ -1,4 +1,8 @@
-export interface UserState {
-    users: string[];
-    room: string | null;
+export interface User {
+    id: string;
+    isInRoom: boolean;
+}
+
+export interface UsersState {
+    users: User[];
 }

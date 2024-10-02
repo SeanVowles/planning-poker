@@ -12,7 +12,6 @@ const emitUpdatedRoomUsers = (io: Server, room: string) => {
 
 export const roomSocketHandler = (io: Server) => {
     io.on('connection', (socket: Socket) => {
-        console.info('User connected: ', socket.id);
 
         // Handle joining a room
         socket.on('join_room', (room: string) => {
@@ -24,7 +23,6 @@ export const roomSocketHandler = (io: Server) => {
             if (!rooms[room].has(socket.id)) {
                 rooms[room].add(socket.id);
                 socket.join(room); // Join the socket to the room
-                console.info(`User ${socket.id} joined room: ${room}`);
                 emitUpdatedRoomUsers(io, room);
             } else {
                 console.info(`User ${socket.id} already in room: ${room}`);
@@ -44,14 +42,11 @@ export const roomSocketHandler = (io: Server) => {
                     emitUpdatedRoomUsers(io, room);
                 }
                 socket.leave(room); // Leave the socket from the room
-                console.info(`User ${socket.id} left room: ${room}`);
             }
         });
 
         // Handle disconnection
         socket.on('disconnect', () => {
-            console.info('User disconnected: ', socket.id);
-
             // Remove the user from all rooms
             for (const room in rooms) {
                 if (rooms[room].has(socket.id)) {

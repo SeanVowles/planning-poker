@@ -1,33 +1,30 @@
-import { Actions } from '../types/actions';
-import { Action } from '../types/actionTypes';
-import { UserState } from '../types/userState';
+import { UserActionTypes } from '../types/actionTypes';
+import { UserAction } from '../types/actions';
+import { UsersState } from '../types/userState';
 
-export const initialState: UserState = {
-    users: [],
-    room: null,
-};
-
-export const userReducer = (state: UserState = initialState, action: Action): UserState => {
+export const userReducer = (state: UsersState, action: UserAction): UsersState => {
     switch (action.type) {
-        case Actions.SetUsers:
+        case UserActionTypes.SET_USERS:
             return {
                 ...state,
                 users: action.payload,
             };
-        case Actions.ClearUsers:
+        case UserActionTypes.JOIN_ROOM:
             return {
                 ...state,
-                users: [],
+                users: state.users.map(user =>
+                    user.id === action.payload.userId
+                        ? { ...user, isInRoom: true }
+                        : user
+                ),
             };
-        case Actions.JoinRoom:
+        case UserActionTypes.LEAVE_ROOM:
             return {
                 ...state,
-                room: action.payload,
-            };
-        case Actions.LeaveRoom:
-            return {
-                ...state,
-                room: null,
+                users: state.users.map(user =>
+                    user.id === action.payload.userId
+                        ? { ...user, isInRoom: false }
+                        : user),
             };
         default:
             return state;
