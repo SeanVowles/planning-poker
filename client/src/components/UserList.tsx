@@ -1,25 +1,25 @@
 import React from 'react';
+import { User } from '../types/userState';
 
 interface UserListProps {
-    users: string[];
-    isInRoom: boolean;
+    users: User[];
 }
 
-const UserList: React.FC<UserListProps> = ({ users, isInRoom }) => {
+const UserList: React.FC<UserListProps> = ({ users }) => {
     return (
         <div>
             <h3>Connected Users</h3>
-            {!isInRoom ? (
-                <p>You are not in a room</p>
-            ) : (
-                <ul>
-                    {users.length > 0 ? (
-                        users.map((userId) => <li key={userId}>{userId}</li>)
-                    ) : (
-                        <li>No users connected</li>
-                    )}
-                </ul>
-            )}
+            <ul>
+                {users.length > 0 ? (
+                    users.map((user) => (
+                        <li key={user.id}>
+                            {user.id} {user.isInRoom ? '(In Room)' : '(Not in Room)'}
+                        </li>
+                    ))
+                ) : (
+                    <li>No users connected</li>
+                )}
+            </ul>
         </div>
     )
 };
