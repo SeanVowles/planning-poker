@@ -1,44 +1,73 @@
+import { Box, Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useUsers } from '../hooks/useUsers';
 import UserList from './UserList';
 
 const RoomManager: React.FC = () => {
     const [roomName, setRoomName] = useState('');
-    const [userId, setUserId] = useState('');
-    const { users, joinRoom, leaveRoom } = useUsers();
+    const [nickname, setNickname] = useState('');
+    const { users, joinRoom, leaveRoom, removeUser } = useUsers();
 
     const handleJoinRoom = () => {
-        if (roomName && userId) {
-            joinRoom(roomName, userId);
+        if (roomName && nickname) {
+            joinRoom(roomName, nickname);
         }
     };
 
     const handleLeaveRoom = () => {
-        if (roomName && userId) {
-            leaveRoom(roomName, userId);
+        if (roomName) {
+            leaveRoom(roomName);
         }
     };
 
-    return (
-        <div>
-            <h2>Room Manager</h2>
-            <input
-                type="text"
-                placeholder="Enter room name"
-                value={roomName}
-                onChange={(e) => setRoomName(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Enter your user ID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-            />
-            <button onClick={handleJoinRoom}>Join Room</button>
-            <button onClick={handleLeaveRoom}>Leave Room</button>
+    const handleRemoveUser = (userId: string) => {
+        removeUser(userId);
+    }
 
-            <UserList users={users} />
-        </div>
+    return (
+        <Box sx={{ p: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Room Manager
+            </Typography>
+
+            <Box mb={2}>
+                <TextField
+                    label='Room Name'
+                    variant='outlined'
+                    fullWidth
+                    value={roomName}
+                    onChange={(e) => setRoomName(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    label='Nickname'
+                    variant='outlined'
+                    fullWidth
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                />
+            </Box>
+
+            <Box mb={2}>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleJoinRoom}
+                    sx={{ mr: 2 }}
+                >
+                    Join Room
+                </Button>
+                <Button
+                    variant='outlined'
+                    color='secondary'
+                    onClick={handleLeaveRoom}
+                >
+                    Leave Room
+                </Button>
+            </Box>
+
+            <UserList users={users} onRemoveUser={handleRemoveUser} />
+        </Box>
     );
 };
 

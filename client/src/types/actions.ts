@@ -8,12 +8,12 @@ export interface SetUserAction {
 
 export interface JoinRoomAction {
     type: UserActionTypes.JOIN_ROOM,
-    payload: { userId: string },
+    payload: { socketId: string, nickname: string },
 }
 
 export interface LeaveRoomAction {
     type: UserActionTypes.LEAVE_ROOM,
-    payload: { userId: string },
+    payload: { socketId: string },
 }
 
 export type UserAction = SetUserAction | JoinRoomAction | LeaveRoomAction;
