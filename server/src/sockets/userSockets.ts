@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 
 /** Master list of all connected users */
-const connectedUsers = new Map<string, { socketId: string, isInRoom: boolean, nickname?: string }>();
+const connectedUsers = new Map<string, { socketId: string, isInRoom: boolean, nickname?: string, roomName?: string }>();
 
 // Emit updated user list to all clients
 const emitUpdatedUsers = (io: Server) => {
@@ -10,13 +10,14 @@ const emitUpdatedUsers = (io: Server) => {
 
 export const userSocketHandler = (io: Server) => {
     io.on('connection', (socket: Socket) => {
-        console.log('User connected: ', socket.id);
+        console.log('User connected:', socket.id);
         connectedUsers.set(
             socket.id,
             {
                 socketId: socket.id,
                 isInRoom: false,
-                nickname: ''
+                nickname: '',
+                roomName: '',
             }
         );
 
@@ -24,13 +25,14 @@ export const userSocketHandler = (io: Server) => {
 
         // Handle joining a room
         socket.on('join_room', (roomName: string, nickname: string) => {
-            console.log('User joined room: ', socket.id, roomName, nickname);
+            console.log('User joined room:', socket.id, roomName, nickname);
             connectedUsers.set(
                 socket.id,
                 {
                     socketId: socket.id,
                     isInRoom: true,
                     nickname: nickname,
+                    roomName: roomName,
                 });
             socket.join(roomName);
             emitUpdatedUsers(io);
@@ -38,15 +40,20 @@ export const userSocketHandler = (io: Server) => {
 
         // Handle leaving a room
         socket.on('leave_room', (roomName: string) => {
-            console.log('User left room: ', socket.id, roomName);
+            console.log('User left room:', socket.id, roomName);
             connectedUsers.set(
                 socket.id,
                 {
                     socketId: socket.id,
                     isInRoom: false,
+                    roomName: roomName,
                 });
             socket.leave(roomName);
             emitUpdatedUsers(io);
+        });
+
+        socket.on('vote', () => {
+            // implement voting logic.
         });
 
         // Todo: Move this logic to the roomSockets (we want admins to kick users from the room, not entirely from the server).
@@ -59,7 +66,7 @@ export const userSocketHandler = (io: Server) => {
 
         // Handle disconnection
         socket.on('disconnect', () => {
-            console.log('User disconnected: ', socket.id);
+            console.log('User disconnected:', socket.id);
             connectedUsers.delete(socket.id);
             emitUpdatedUsers(io);
         });

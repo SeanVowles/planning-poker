@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { userReducer } from '../store/userReducer';
 import { UserActionTypes } from '../types/actionTypes';
@@ -7,7 +7,6 @@ import config from '../utils/config';
 
 const initialState: UsersState = {
     users: [],
-    socketId: null,
 };
 
 const socket: Socket = io(config.SERVER_URL);
@@ -16,7 +15,6 @@ export const useUsers = () => {
     const [state, dispatch] = useReducer(userReducer, initialState);
 
     useEffect(() => {
-
         socket.on('users', (updatedUsers: User[]) => {
             dispatch({ type: UserActionTypes.SET_USERS, payload: updatedUsers })
         });
