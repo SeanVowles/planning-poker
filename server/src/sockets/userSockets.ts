@@ -52,10 +52,6 @@ export const userSocketHandler = (io: Server) => {
             emitUpdatedUsers(io);
         });
 
-        socket.on('vote', () => {
-            // implement voting logic.
-        });
-
         // Todo: Move this logic to the roomSockets (we want admins to kick users from the room, not entirely from the server).
         // Add some sort of elevated permission for the 'Scrum Master'.
         socket.on('remove_user', (userId: string) => {
